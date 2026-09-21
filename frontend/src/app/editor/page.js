@@ -573,13 +573,15 @@ function EditorPageContent() {
   };
 
   function getApiBaseUrl() {
-    if (typeof window === 'undefined') return 'http://localhost:4000';
+    if (typeof window === 'undefined') return 'http://127.0.0.1:4000';
     const host = window.location.hostname;
     // Jika frontend diakses via IP (bukan localhost), pakai port 4000 di IP yang sama
-    if (host && host !== 'localhost' && host !== '127.0.0.1') {
+    if (host && host !== 'localhost' && host !== '127.0.0.1' && !host.includes('::')) {
       return `http://${host}:4000`;
     }
-    return 'http://localhost:4000';
+    // Gunakan 127.0.0.1 (bukan 'localhost') karena browser kadang resolve ke ::1,
+    // sedangkan backend bind IPv4 — koneksi ke ::1 ditolak = "Failed to fetch".
+    return 'http://127.0.0.1:4000';
   }
 
   if (!template) return null;
