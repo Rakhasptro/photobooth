@@ -573,10 +573,14 @@ function EditorPageContent() {
   };
 
   function getApiBaseUrl() {
+    // Prioritas: env (NEXT_PUBLIC_API_BASE_URL) -> IP host -> localhost
+    if (process.env.NEXT_PUBLIC_API_BASE_URL) {
+      return process.env.NEXT_PUBLIC_API_BASE_URL.replace(/\/+$/, '');
+    }
     if (typeof window === 'undefined') return 'http://127.0.0.1:4000';
     const host = window.location.hostname;
     // Jika frontend diakses via IP (bukan localhost), pakai port 4000 di IP yang sama
-    if (host && host !== 'localhost' && host !== '127.0.0.1' && !host.includes('::')) {
+    if (host && host !== 'localhost' && host !== '127.0.0.1') {
       return `http://${host}:4000`;
     }
     // Gunakan 127.0.0.1 (bukan 'localhost') karena browser kadang resolve ke ::1,
